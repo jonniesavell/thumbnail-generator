@@ -11,7 +11,8 @@ Resources:
       Handler: com.indigententerprises.thumbnailgenerator.App::handleRequest
       Timeout: 900
       MemorySize: 2048
-      CodeUri: ./target/thumbnail-generator.jar
+      # . instead of ./target/thumbnail-generator.jar
+      CodeUri: .
       Environment:
         Variables:
           SOURCE_BUCKET: com.indigententerprises.photos
