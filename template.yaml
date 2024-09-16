@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  # See https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  # for more info to see how to tune the lambda function configs based on your use case.
+  AppFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: thumbnail-generator
+      Runtime: java17
+      Handler: com.indigententerprises.thumbnailgenerator.App::handleRequest
+      Timeout: 900
+      MemorySize: 2048
+      CodeUri: ./target/thumbnail-generator.jar
+      Environment:
+        Variables:
+          SOURCE_BUCKET: com.indigententerprises.photos
+          TARGET_BUCKET: com.indigententerprises.photos.thumbnails
