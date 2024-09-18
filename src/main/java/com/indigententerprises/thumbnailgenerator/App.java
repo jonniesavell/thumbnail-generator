@@ -50,7 +50,7 @@ public class App implements RequestHandler<S3Event, Void> {
 
             try {
                 final File parentDirectory = new File("/tmp");
-                final File tempFile = File.createTempFile(null, null, parentDirectory);
+                final File tempFile = File.createTempFile("image", null, parentDirectory);
 
                 // retrieve the source object
                 try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
