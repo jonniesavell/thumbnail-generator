@@ -13,6 +13,7 @@ Resources:
       MemorySize: 2048
       # . instead of ./target/thumbnail-generator.jar
       CodeUri: .
+      Role: arn:aws:iam::739178275513:role/thumbnail-generator-role
       Environment:
         Variables:
           SOURCE_BUCKET: com.indigententerprises.photos
