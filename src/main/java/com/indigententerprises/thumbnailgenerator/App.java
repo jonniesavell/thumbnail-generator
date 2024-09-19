@@ -80,7 +80,7 @@ public class App implements RequestHandler<S3Event, Void> {
                                 objectServicePair.target.storeObjectAndMetaData(
                                         thumbFileInputStream,
                                         newHandle,
-                                        imageData.size,
+                                        (int) thumbnailFile.length(),
                                         Collections.emptyMap()
                                 );
                             }
