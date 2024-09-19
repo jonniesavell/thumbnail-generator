@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.imageio.ImageIO;
+
 /**
  * Lambda function entry point. You can change to use other pojo type or implement
  * a different RequestHandler.
@@ -71,12 +73,17 @@ public class App implements RequestHandler<S3Event, Void> {
                                     width + "X" + thumbnailImage.getHeight();
                             final String newKey = key + "_" + widthByHeight + ".jpg";
                             final Handle newHandle = new Handle(newKey);
-                            objectServicePair.target.storeObjectAndMetaData(
-                                    fileInputStream,
-                                    newHandle,
-                                    imageData.size,
-                                    Collections.emptyMap()
-                            );
+                            final File thumbnailFile = File.createTempFile("thumb", null, parentDirectory);
+                            ImageIO.write(thumbnailImage, "jpeg", thumbnailFile);
+
+                            try (FileInputStream thumbFileInputStream = new FileInputStream(thumbnailFile)) {
+                                objectServicePair.target.storeObjectAndMetaData(
+                                        thumbFileInputStream,
+                                        newHandle,
+                                        imageData.size,
+                                        Collections.emptyMap()
+                                );
+                            }
                         } catch (RuntimeException e) {
                             // swallow: cannot fail the batch because of a problem with a part
                         }
