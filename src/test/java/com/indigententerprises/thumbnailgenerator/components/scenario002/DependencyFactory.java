@@ -1,16 +1,15 @@
-package com.indigententerprises.thumbnailgenerator;
-
-import com.indigententerprises.thumbnailgenerator.components.FilenameExtensionValidator;
-import com.indigententerprises.thumbnailgenerator.components.FilenameGenerator;
-import com.indigententerprises.thumbnailgenerator.components.ImageTestAgent;
-import com.indigententerprises.thumbnailgenerator.components.ThumbnailGeneratorService;
+package com.indigententerprises.thumbnailgenerator.components.scenario002;
 
 import com.indigententerprises.components.ObjectStorageComponent;
 import com.indigententerprises.factories.ObjectStoreFactory;
 import com.indigententerprises.services.common.SystemException;
 import com.indigententerprises.services.objects.IObjectService;
-
 import com.indigententerprises.thumbnail.components.ThumbnailService;
+import com.indigententerprises.thumbnailgenerator.App;
+import com.indigententerprises.thumbnailgenerator.IObjectServicePair;
+import com.indigententerprises.thumbnailgenerator.components.FilenameExtensionValidator;
+import com.indigententerprises.thumbnailgenerator.components.FilenameGenerator;
+import com.indigententerprises.thumbnailgenerator.components.ThumbnailGeneratorService;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -49,8 +48,13 @@ public class DependencyFactory {
 
     public static Predicate<String> newPredicate() {
 
-        final Predicate<String> result = new ImageTestAgent();
-        return result;
+        final Predicate<String> denier = new Predicate<String>() {
+            @Override
+            public boolean test(String s) {
+                return false;
+            }
+        };
+        return denier;
     }
 
     public static com.indigententerprises.thumbnailgenerator.services.ValidationService<String> newValidationService() {

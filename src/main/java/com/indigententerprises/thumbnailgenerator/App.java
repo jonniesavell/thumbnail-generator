@@ -1,25 +1,19 @@
 package com.indigententerprises.thumbnailgenerator;
 
+import com.indigententerprises.thumbnailgenerator.components.ThumbnailGeneratorService;
+import com.indigententerprises.thumbnailgenerator.services.ValidationException;
+
+import com.indigententerprises.services.common.SystemException;
+
 import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
 
-import com.indigententerprises.domain.objects.Handle;
-import com.indigententerprises.services.common.SystemException;
-import com.indigententerprises.thumbnail.domain.ImageData;
-import com.indigententerprises.thumbnail.services.ThumbnailService;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import javax.imageio.ImageIO;
 
 /**
  * Lambda function entry point. You can change to use other pojo type or implement
@@ -29,12 +23,15 @@ import javax.imageio.ImageIO;
  */
 public class App implements RequestHandler<S3Event, Void> {
 
-    private final IObjectServicePair objectServicePair;
-    private final ThumbnailService thumbnailService;
+    private final ThumbnailGeneratorService thumbnailGeneratorService;
+    private final ArrayList<Integer> widths;
 
     public App() throws SystemException {
-        objectServicePair = DependencyFactory.newIObjectServicePair();
-        thumbnailService = DependencyFactory.newThumbnailService();
+        thumbnailGeneratorService = DependencyFactory.newThumbnailGenerator();
+
+        widths = new ArrayList<>();
+        widths.add(100);
+        widths.add(200);
     }
 
     @Override
@@ -46,51 +43,14 @@ public class App implements RequestHandler<S3Event, Void> {
             // final String srcBucket = record.getS3().getBucket().getName();
             // we are statically wired to receive from this bucket
             final String key = record.getS3().getObject().getUrlDecodedKey();
-            final Handle handle = new Handle(key);
-            final int [] widths = { 100, 200 };
-            final String type = "JPEG";
 
             try {
-                final File parentDirectory = new File("/tmp");
-                final File tempFile = File.createTempFile("image", null, parentDirectory);
-
-                // retrieve the source object
-                try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
-                    objectServicePair.source.retrieveObject(handle, fileOutputStream);
-                }
-
-                for (final int width : widths) {
-                    try (FileInputStream fileInputStream = new FileInputStream(tempFile)) {
-                        try {
-                            final ImageData imageData =
-                                    thumbnailService.resizeImage(
-                                            fileInputStream,
-                                            width,
-                                            type
-                                    );
-                            final BufferedImage thumbnailImage = imageData.bufferedImage;
-                            final String widthByHeight =
-                                    width + "X" + thumbnailImage.getHeight();
-                            final String newKey = key + "_" + widthByHeight + ".jpg";
-                            final Handle newHandle = new Handle(newKey);
-                            final File thumbnailFile = File.createTempFile("thumb", null, parentDirectory);
-                            ImageIO.write(thumbnailImage, "jpeg", thumbnailFile);
-
-                            try (FileInputStream thumbFileInputStream = new FileInputStream(thumbnailFile)) {
-                                objectServicePair.target.storeObjectAndMetaData(
-                                        thumbFileInputStream,
-                                        newHandle,
-                                        (int) thumbnailFile.length(),
-                                        Collections.emptyMap()
-                                );
-                            }
-                        } catch (RuntimeException e) {
-                            // swallow: cannot fail the batch because of a problem with a part
-                        }
-                    }
-                }
-            } catch (NoSuchElementException e) {
-                // swallow
+                thumbnailGeneratorService.generateThumbnails(key, widths);
+            } catch (ValidationException | NoSuchElementException e) {
+                // swallow:
+                //   (1) validation-exception means that key refers to an unsupported image type
+                //   (2) no-such-element-exception means that either an object referred to by key does not exist
+                //         or the bucket itself does not exist (this latter possibility identifies a configuration error)
             } catch (IOException | SystemException e) {
                 throw new RuntimeException(e);
             }
