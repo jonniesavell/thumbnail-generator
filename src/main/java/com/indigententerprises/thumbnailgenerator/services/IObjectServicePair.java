@@ -1,4 +1,4 @@
-package com.indigententerprises.thumbnailgenerator;
+package com.indigententerprises.thumbnailgenerator.services;
 
 import com.indigententerprises.services.objects.IObjectService;
 

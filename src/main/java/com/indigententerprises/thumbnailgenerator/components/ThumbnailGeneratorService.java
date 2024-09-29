@@ -1,6 +1,6 @@
 package com.indigententerprises.thumbnailgenerator.components;
 
-import com.indigententerprises.thumbnailgenerator.IObjectServicePair;
+import com.indigententerprises.thumbnailgenerator.services.IObjectServicePair;
 import com.indigententerprises.thumbnailgenerator.services.ValidationException;
 import com.indigententerprises.thumbnailgenerator.services.ValidationService;
 

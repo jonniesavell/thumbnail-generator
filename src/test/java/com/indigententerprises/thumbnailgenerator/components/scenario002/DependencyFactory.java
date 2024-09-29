@@ -1,22 +1,19 @@
 package com.indigententerprises.thumbnailgenerator.components.scenario002;
 
+import com.indigententerprises.thumbnailgenerator.components.FilenameExtensionValidator;
+import com.indigententerprises.thumbnailgenerator.components.FilenameGenerator;
+import com.indigententerprises.thumbnailgenerator.components.ThumbnailGeneratorService;
+import com.indigententerprises.thumbnailgenerator.services.IObjectServicePair;
+
 import com.indigententerprises.components.ObjectStorageComponent;
 import com.indigententerprises.factories.ObjectStoreFactory;
 import com.indigententerprises.services.common.SystemException;
 import com.indigententerprises.services.objects.IObjectService;
 import com.indigententerprises.thumbnail.components.ThumbnailService;
-import com.indigententerprises.thumbnailgenerator.App;
-import com.indigententerprises.thumbnailgenerator.IObjectServicePair;
-import com.indigententerprises.thumbnailgenerator.components.FilenameExtensionValidator;
-import com.indigententerprises.thumbnailgenerator.components.FilenameGenerator;
-import com.indigententerprises.thumbnailgenerator.components.ThumbnailGeneratorService;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-/**
- * The module containing all dependencies required by the {@link App}.
- */
 public class DependencyFactory {
 
     private static final String SOURCE_BUCKET = "SOURCE_BUCKET";

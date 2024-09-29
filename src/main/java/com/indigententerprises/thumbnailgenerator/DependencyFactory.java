@@ -4,6 +4,7 @@ import com.indigententerprises.thumbnailgenerator.components.FilenameExtensionVa
 import com.indigententerprises.thumbnailgenerator.components.FilenameGenerator;
 import com.indigententerprises.thumbnailgenerator.components.ImageTestAgent;
 import com.indigententerprises.thumbnailgenerator.components.ThumbnailGeneratorService;
+import com.indigententerprises.thumbnailgenerator.services.IObjectServicePair;
 
 import com.indigententerprises.components.ObjectStorageComponent;
 import com.indigententerprises.factories.ObjectStoreFactory;
